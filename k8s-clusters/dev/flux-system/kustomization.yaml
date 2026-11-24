@@ -3,3 +3,22 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
+patches:
+  - patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: all
+      spec:
+        template:
+          spec:
+            containers:
+              - name: manager
+                env:
+                  - name: "HTTPS_PROXY"
+                    value: "http://172.23.128.67:3128"
+                  - name: "NO_PROXY"
+                    value: "localhost,127.0.0.1,172.0.0.0/8,192.0.0.0/8,.ft-gcc.loc"      
+    target:
+      kind: Deployment
+      labelSelector: app.kubernetes.io/part-of=flux
